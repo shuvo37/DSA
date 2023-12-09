@@ -1,94 +1,107 @@
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <climits>
-
+#include<bits/stdc++.h>
 using namespace std;
+typedef long long ll;
+typedef unsigned long long ull;
+typedef pair<int,int> pii;
+   const int mx=1e5;
+   int n,m;
+ vector<pii>adj[mx];
 
-typedef pair<int, int> pii; // Pair of (vertex, weight)
 
-// Function to implement Dijkstra's algorithm
-void dijkstra(vector<vector<pii>>& graph, int source, vector<int>& distances) {
-    int numVertices = graph.size();
-    priority_queue<pii, vector<pii>, greater<pii>> pq; // Min-heap priority queue
 
-    distances[source] = 0;
-    pq.push(make_pair(0, source));
 
-    while (!pq.empty()) {
-      int dist_u = pq.top().first;
-        int u = pq.top().second;
-        cout<<" when vertex "<<u<<" dist "<<dist_u<<endl;
-        pq.pop();
+     void dijkstra(vector<int>dis,int source)
+     {
 
-        if (dist_u > distances[u]) {
-          cout<<"  continue "<<dist_u<<"  distance"<<distances[u]<<endl;
-            continue; // Skip outdated entries in the priority queue
-        }
+        dis[source]=0;
+         priority_queue<pii,vector<pii>,greater<pii>>pq;
 
-        for (const pii& neighbor : graph[u]) {
-            int v = neighbor.first;
-            int weight = neighbor.second;
 
-            cout<<" then vertex "<<v<<" cost "<<weight<<endl;
+              pq.push({0,0});
 
-            if (dist_u + weight < distances[v]) {
-                cout<<" enter  "<<v<<" cost "<<weight<<endl;
-                distances[v] = dist_u + weight;
-                pq.push(make_pair(distances[v], v));
-                cout<<" update value vectx"<<v<<" cost "<< distances[v]<<endl;
-            }
-        }
-    }
+
+              while(!pq.empty())
+              {
+
+               int  dist_u=pq.top().first;
+               int   u=pq.top().second;
+
+
+                  pq.pop();
+
+                     if(dis[u]<dist_u)
+                     {
+
+                       continue;
+
+                     }
+
+
+                   for(auto node:adj[u])
+                   {
+                      int v=node.first;
+                      int wt=node.second;
+
+
+
+                       if(dist_u+wt<dis[v])
+                       {
+
+                          dis[v]= dist_u+wt;
+                           pq.push({dis[v],v});
+                       }
+
+
+                   }
+
+
+
+
+              }
+
+
+         for(int i=0;i<=n;i++)
+         {
+               if(dis[i]==INT_MAX){cout<<"not reachable\n";continue;}
+            cout<<dis[i]<<" \n";
+
+         }
+
+           cout<<"\n";
+
+     }
+
+
+
+
+int main(){
+  ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+
+
+    cin>>n>>m;
+
+
+     int u,v;
+     int w;
+
+      for(int i=0;i<m;i++)
+      {
+         cin>>u>>v>>w;
+
+           adj[u].push_back({v,w});
+
+           adj[v].push_back({u,w});
+
+
+      }
+
+
+    vector<int>dist(mx,INT_MAX);
+
+        dijkstra(dist,0);
+
+
+
 }
-
-int main() {
-    int numVertices, numEdges;
-    cin >> numVertices >> numEdges;
-
-    vector<vector<pii>> graph(numVertices + 1); // 1-based indexing
-    int u, v, weight;
-
-    for (int i = 0; i < numEdges; ++i) {
-        cin >> u >> v >> weight;
-        graph[u].emplace_back(v, weight);
-        graph[v].emplace_back(u, weight); // For undirected graph
-    }
-
-    int source=0;
-
-
-    vector<int> distances(numVertices + 1, INT_MAX);
-    dijkstra(graph, source, distances);
-
-    cout << "Shortest distances from source " << source << ":\n";
-    for (int i = 1; i <= numVertices; ++i) {
-        cout << "Vertex " << i << ": ";
-        if (distances[i] == INT_MAX) {
-            cout << "Not reachable";
-        } else {
-            cout << distances[i];
-        }
-        cout << "\n";
-    }
-
-    return 0;
-}
-
-/*
-
-
-0 2 9
-0 5 7
-1 3 8
-1 2 2
-2 4 11
-2 5 10
-3 4 6
-4 5 15
-
-
-
-
-
-*/
