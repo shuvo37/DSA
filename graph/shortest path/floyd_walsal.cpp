@@ -1,74 +1,70 @@
+
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
 typedef unsigned long long ull;
-   const int mx=500;
+   const int mx=1e5;
+      int n,m;
 
-    int n,m,w;
+
+
+
 
       void floydWarshall(vector<vector<int>>dist)
       {
 
-
-              for(int i=0;i<n;i++){dist[i][i]=0;}
-          for(int k=0;k<n;k++)
+          for(int i=1;i<=n;i++)
           {
-
-            for(int i=0;i<n;i++ )
-            {
-               for(int j=0;j<n;j++)
-               {
-
-
-                 if(dist[i][j]>dist[i][k]+dist[k][j]&&dist[i][k]!=INT_MAX
-                    &&dist[k][j]!=INT_MAX)
-                 {
-
-                    dist[i][j]= dist[i][k]+dist[k][j];
-
-
-                 }
-
-
-
-               }
-
-
-
-            }
-
+            dist[i][i]=0;
 
           }
 
+         for(int k=1;k<=n;k++)
+         {
+             for(int i=1;i<=n;i++)
+             {
+                for(int j=1;j<=n;j++)
+                {
 
 
-
-       for(int i=0;i<n;i++ )
-            {
-               for(int j=0;j<n;j++)
-               {
-
-
-                 if(dist[i][j]==INT_MAX)
+                 if(dist[i][j]>dist[i][k]+dist[k][j]&&dist[i][k]!=INT_MAX&&dist[k][j]!=INT_MAX)
                  {
 
-                   cout<<-1<<endl;
-
-                 }
-                 else{
-
-                   cout<< dist[i][j]<<endl;
+                       dist[i][j]=dist[i][k]+dist[k][j];
 
                  }
 
 
-               }
+                }
+
+
+             }
+
+         }
+
+
+         for(int i=1;i<=n;i++ )
+         {
+            for(int j=1;j<=n;j++)
+            {
+
+              if(dist[i][j]==INT_MAX)
+              {
+
+                  cout<<-1<<endl;
+
+
+              }
+              else{
+
+                 cout<<"distant "<<i<<" "<<j<<" "<<dist[i][j]<<endl;
+              }
 
 
 
             }
 
-
+         }
 
 
 
@@ -77,27 +73,31 @@ typedef unsigned long long ull;
       }
 
 
+
 int main(){
-
-
-
-       vector<vector<int>>graph(mx,vector<int>(mx,INT_MAX));
-
+  ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
 
    cin>>n>>m;
 
-    for(int i=0;i<m;i++)
-    {
-       int u,v;
-         cin>>u>>v>>w;
+
+    vector<vector<int>>g(n+4,vector<int>(n+4,INT_MAX));
+
+       int u,v,w;
+
+       for(int i=0;i<m;i++)
+       {
+
+          cin>>u>>v>>w;
+
+            g[u][v]=w;
+       }
 
 
-          graph[u][v]=w;
+       floydWarshall(g);
 
-    }
 
-      floydWarshall(graph);
 
 
 }
