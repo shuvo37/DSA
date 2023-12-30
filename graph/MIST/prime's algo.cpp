@@ -1,97 +1,77 @@
 #include<bits/stdc++.h>
 using namespace std;
+typedef long long ll;
+typedef pair<ll,int> pii;
+const int  mx=1e5+3;
 
-typedef pair<int,int> pii;
 
-// Function to find sum of weights of edges of the Minimum Spanning Tree.
-int spanningTree(int V, int E, int edges[][3])
+
+
+ll spanningTree(int V, int E,vector<pair<int,ll>>adj[])
 {
-    // Create an adjacency list representation of the graph
-    vector<vector<int>> adj[V];
-
-    // Fill the adjacency list with edges and their weights
-    for (int i = 0; i < E; i++) {
-
-        int u = edges[i][0];
-        int v = edges[i][1];
-        int wt = edges[i][2];
-
-        adj[u].push_back({v, wt});
-        adj[v].push_back({u, wt});
-    }
 
 
-    // Create a priority queue to store edges with their weights
-   priority_queue<pii, vector<pii>, greater<pii>> pq;
+    priority_queue<pii, vector<pii>, greater<pii>> pq;
 
-    // Create a visited array to keep track of visited vertices
+
+
     vector<bool> visited(V, false);
 
-    // Variable to store the result (sum of edge weights)
-    int res = 0;
 
-    // Start with vertex 0
-    pq.push({0, 0});
+    ll  res = 0;
 
-    // Perform Prim's algorithm to find the Minimum Spanning Tree
+
+    pq.push({0, 1});
+
+
     while(!pq.empty()){
+
         auto p = pq.top();
         pq.pop();
 
-        int wt = p.first;  // Weight of the edge
-        int u = p.second;  // Vertex connected to the edge
+        ll wt = p.first;
+        int u = p.second;
 
         if(visited[u] == true){
-            continue;  // Skip if the vertex is already visited
+            continue;
         }
 
-        res += wt;  // Add the edge weight to the result
-        visited[u] = true;  // Mark the vertex as visited
+        res += wt;
+        visited[u] = true;
 
-        // Explore the adjacent vertices
-        for(auto v : adj[u]){
-            // v[0] represents the vertex and v[1] represents the edge weight
-            if(visited[v[0]] == false){
-         //     cout<<v[0]<<" "<<v[1]<<endl;
-                pq.push({v[1], v[0]});  // Add the adjacent edge to the priority queue
+
+        for(auto x : adj[u]){
+
+              int v=x.first;
+            if(visited[v] == false){
+                pq.push({x.second, x.first});
             }
         }
     }
 
-    return res;  // Return the sum of edge weights of the Minimum Spanning Tree
+    return res;
 }
 
 int main()
 {
-int graph[][3] = {{0,1,4},
-{0,2,6},
-{1,2,6},
-{1,3,3},
-{1,4,4},
-{2,3,1},
-{4,5,7},
-{4,3,2},
-{3,5,3}};
+      int n,m;
+      cin>>n>>m;
+
+   vector<pair<int,ll>>adj[n+1];
+     int x,y;
+      ll w;
+    for(int i=1;i<=m;i++)
+    {
+       cin>>x>>y>>w;
+
+     adj[x].push_back({y,w});
+     adj[y].push_back({x,w});
 
 
+    }
 
 
-
-    // Function call
-    cout << spanningTree(6, 9, graph) << endl;
+    cout << spanningTree(n,m,adj) << endl;
 
     return 0;
 }
-
-/*
-{0,1,4},
-{0,2,6},
-{1,2,6},
-{1,3,3},
-{1,4,4},
-{2,3,1},
-{4,5,7},
-{4,3,2},
-{3,5,3}
-
-*/
