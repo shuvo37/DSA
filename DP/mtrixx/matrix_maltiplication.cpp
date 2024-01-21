@@ -1,54 +1,80 @@
-		//header
+        //header
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
 typedef unsigned long long ull;
    const int mx=1e6;
 
-int main(){
- 
-  int n=5;
 
-  int p[]={5,4,6,2,7};
-  int m[5][5]={0};
-  int s[5][5]={0};
+   void printOptimalParenthesis(const vector<vector<int>>& split, int i, int j) {
+    if (i == j) {
+        cout << "A" << i+1;
+    } else {
+        cout << "(";
+           // cout<<"\n "<<i<<" "<< split[i][j]<<endl;
+        printOptimalParenthesis(split, i, split[i][j]);
+           //   cout<<"\n"<< split[i][j]+1<<" "<<j<<endl;
+        printOptimalParenthesis(split, split[i][j] + 1, j);
+        cout << ")";
+    }
+}
 
-  int j,mi,q;
+// Function to find the minimum number of scalar multiplications
+// needed to multiply a chain of matrices and print the optimal parenthesized form
+void matrixChainMultiplication(const vector<int>& dimensions) {
+    int n = dimensions.size() - 1; // Number of matrices
+    vector<vector<int>> dp(n, vector<int>(n, 0));
+    vector<vector<int>> split(n, vector<int>(n, 0));
 
-  for(int d=1;d<n-1;d++)
-  {
+    // dp[i][j] will store the minimum number of scalar multiplications
+    // needed to multiply matrices from i to j
 
-  for(int i=1;i<n-d;i++)
-  {
+    // Fill the table in a bottom-up manner
+    for (int len = 2; len <= n; ++len) {
+        for (int i = 0; i <= n - len; ++i) {
+            int j = i + len - 1;
+            dp[i][j] = INT_MAX;
 
-
-  q=m[i][k]+m[k+1][j]+p[i-1]*p[k]*p[j];
-
-    if(q<mi)  j=i+d;
-  mi=32767;
-  for(int k=i;k<=j-1;k++)
-  {
-
-
-    {
-
-   mi=q;
-   s[i][j]=k;
-
-
+            for (int k = i; k < j; ++k) {
+                int cost = dp[i][k] + dp[k + 1][j] + dimensions[i] * dimensions[k + 1] * dimensions[j + 1];
+                if (cost < dp[i][j]) {
+                    dp[i][j] = cost;
+                    split[i][j] = k; // Store the optimal split position
+                }
+            }
+        }
     }
 
+    cout<<"\n";
 
-  }
-
-
-m[i][j]=mi;
-
-
-  }
+   for(int i=0;i<n;i++)
+   {
+for(int j=0;j<n;j++)
+{
 
 
-  }  
-cout<<m[i][n-1];
+  cout<<split[i][j]<<" ";
 
+}
+cout<<"\n";
+
+
+   }
+
+      cout<<"\n"<<dp[0][n-1]<<endl;
+    // Reconstruct the optimal parenthesized form
+    printOptimalParenthesis(split, 0, n - 1);
+}
+
+// Function to print the optimal parenthesized form
+
+
+int main() {
+    // Example usage
+    vector<int> dimensions = {1 ,3 ,2 ,1, 5};
+   
+    matrixChainMultiplication(dimensions);
+
+   
+    return 0;
 }
