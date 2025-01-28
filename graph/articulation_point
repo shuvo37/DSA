@@ -1,0 +1,203 @@
+
+#include<bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace std;
+typedef long long ll ;
+typedef vector < ll > vll;
+typedef vector < int > vii;
+typedef pair<ll , ll > prl;
+typedef pair<int , int > pri;
+typedef set<ll>sst;
+typedef vector <pair<ll , ll >>vpr;
+
+#define con    continue
+#define bit(n) (1<<(n))
+#define endl "\n"
+#define sortt(x) sort(x.begin(),x.end())
+#define pb push_back
+#define pp pop_back
+#define ci(x)  cin >> x
+#define cl(x) cout << x <<endl;
+#define c(x) cout << x <<" ";
+#define f first
+#define s second
+#define all(x) x.begin(),x.end()
+#define sz(x) x.size()
+
+
+
+ const ll mod= 1e9+7;
+ const int mx= 2e4+3;
+
+
+
+    ll low[mx] , dic[mx] , arti[mx] , par[mx] , tim;
+
+    bool vis[mx];
+
+   vector<ll>g[mx];
+
+
+    void init()
+    {
+
+    tim = 0;
+
+    for(int i = 0; i<=mx; i++)
+    {
+
+       g[i].clear();
+
+       vis[i] = 0;
+
+        low[i] = 0;
+
+        dic[i] = 0;
+
+        arti[i] = -1;
+
+
+    }
+
+    }
+
+
+
+   void dfs(ll node , ll p)
+   {
+
+
+        vis[node] = 1;
+
+        low[node] = dic[node] = ++tim;
+
+        ll child = 0;
+
+       for(auto x : g[node])
+       {
+
+           if( x == p)
+           {
+               continue;
+           }
+           if(!vis[x])
+           {
+
+            child++;
+
+            dfs(x , node);
+
+            low[node] = min(low[x] , low[node]);
+
+
+             if(dic[node] <= low[x] && p != -1)
+             {
+
+
+                   arti[node] = 1;
+
+             }
+
+
+           }
+           else{
+
+
+            low[node] = min(dic[x] , low[node]);
+
+           }
+
+
+
+
+
+       }
+
+      if(child > 1 && p == -1)
+      {
+
+
+         arti[node]  = 1;
+
+      }
+
+
+
+   }
+
+
+  int main()
+  {
+
+ ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+
+   int t , cas = 0;
+
+     cin >> t;
+
+      while(t--)
+   {
+
+   init();
+
+    cas++;
+
+
+cout << "Case "<<cas<< ": ";
+
+    ll n , m , u , v;
+
+     cin >> n >> m;
+
+     for(int i = 1; i<=m; i++)
+     {
+
+         cin >> u >> v;
+
+         g[u].pb(v);
+
+         g[v].pb(u);
+
+     }
+
+      for(int i = 1; i<=n; i++)
+      {
+
+
+            if(!vis[i])
+            {
+
+             dfs(i , -1);
+
+
+            }
+
+
+      }
+
+
+        ll ans = 0;
+
+
+        for(int i = 1; i<=n; i++)
+        {
+
+             if(arti[i] != -1)
+             {
+
+
+                  ans++;
+             }
+
+        }
+
+
+          cout << ans <<endl;
+
+
+   }
+
+  }
+
