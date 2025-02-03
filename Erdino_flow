@@ -1,80 +1,128 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include <vector>
+#include <stack>
+#include <limits.h>
 using namespace std;
 
-const int INF = 1e9; // Large value representing infinite capacity
+int s;
+int t;
+int n;
 
-int n; // Number of nodes
-vector<vector<int>> capacity; // Capacity matrix
-vector<vector<int>> adj; // Adjacency list
+vector < vector < pair <int, int> > > g;
+int a[110][110];
+int parent[110];
 
-// BFS to find an augmenting path
-int bfs(int s, int t, vector<int>& parent) {
-    fill(parent.begin(), parent.end(), -1);
-    parent[s] = -2;
-    queue<pair<int, int>> q;
-    q.push({s, INF});
+int dfs()
+{
 
-    while (!q.empty()) {
-        int cur = q.front().first;
-        int flow = q.front().second;
-        q.pop();
+	int vis[110];
+	int top;
+	int x;
+	
+	memset(vis, 0, sizeof vis);
 
-        for (int next : adj[cur]) {
-         
-            if (parent[next] == -1 && capacity[cur][next] > 0) {
-                parent[next] = cur;
-                int new_flow = min(flow, capacity[cur][next]);
-                if (next == t)
-                    return new_flow; 
-                q.push({next, new_flow});
-            }
-        }
-    }
+	stack <int> q;
+	q.push(s);
+	vis[s] = 1;
 
-    return 0; 
+	
+	while(!q.empty()) {
+		top = q.top();
+		q.pop();
+		for (int i = 0; i < g[top].size(); i++) {
+			x = g[top][i].first;
+			if(a[top][x] > 0 and vis[x] == 0) {
+				q.push(x);
+				vis[x] = 1;
+				parent[x] = top;
+			}
+
+		}
+
+
+	}
+	return vis[t] == 1;
+
+
+
 }
 
 
+int main()
+{
+
+	int x;
+	int y;
+	int w;
+	int CS;
+	int flow;
+	int k;
+	int c;
+	int p;
+	int ans;
 
 
-int maxflow(int s, int t) {
-    int flow = 0;
-    vector<int> parent(n);
-    int new_flow;
 
-    while ((new_flow = bfs(s, t, parent))) {
-        flow += new_flow;
-        int cur = t;
-        while (cur != s) {
-            int prev = parent[cur];
-            capacity[prev][cur] -= new_flow;
-            capacity[cur][prev] += new_flow; 
-            cur = prev;
-        }
-    }
 
-    return flow;
+	scanf("%d", &CS);
+
+	for (int cs = 1; cs <= CS; cs++) {
+		scanf("%d", &n);
+		scanf("%d", &s);
+		scanf("%d", &t);
+		scanf("%d", &c);
+		
+		memset(a, 0, sizeof(a));
+		vector < vector < pair <int, int> > > tg(n+2);
+
+		swap(tg, g);
+		ans = 0;
+
+		for (int i = 0; i < c; i++) {
+			scanf("%d", &x);
+			scanf("%d", &y);
+			scanf("%d", &w);
+
+			a[x][y] += w;
+			a[y][x] += w;
+			g[x].push_back(make_pair(y, w));
+			g[y].push_back(make_pair(x, w));
+		}
+
+
+		while(dfs()) {
+			k = t;
+
+			flow = INT_MAX;
+			
+			while(k != s) {
+				p = parent[k];
+				flow = min(flow, a[k][p]);
+				k = parent[k];
+
+				
+			}
+			
+			
+			k = t;
+
+
+			while(k != s) {
+				p = parent[k];
+				a[k][p] -= flow;
+				a[p][k] -= flow;
+				k = parent[k];
+			}
+
+			ans += flow;
+		}
+
+		printf("Case %d: %d\n", cs, ans); 
+	}
+
+
 }
 
 
-int main() {
-    int m; 
-    cin >> n >> m; 
-
-    capacity.assign(n, vector<int>(n, 0));
-    adj.assign(n, vector<int>());
-
-    for (int i = 0; i < m; i++) {
-        int u, v, cap;
-        cin >> u >> v >> cap;
-        capacity[u][v] += cap; 
-        adj[u].push_back(v);
-        adj[v].push_back(u); 
-    }
-
-    int s, t;
-    cin >> s >> t; 
-    cout << "Maximum Flow: " << maxflow(s, t) << endl;
-
-    return 0;
-}
